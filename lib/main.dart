@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
+import 'package:slider_button/slider_button.dart';
 
 void main() {
   debugPaintSizeEnabled = false;
@@ -76,7 +77,27 @@ class _MyAppState extends State<MyApp> {
                         ),
                       )
                     : Center(child: Text("Camera inactive"))),
-            Text("QRCODE: $qr"),
+            Center(
+                child: SliderButton(
+              action: () {
+                ///Do something here
+              },
+              label: Text(
+                "Slide to cancel Event",
+                style: TextStyle(
+                    color: Color(0xff4a4a4a),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17),
+              ),
+              icon: Text(
+                "x",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 44,
+                ),
+              ),
+            ))
           ],
         ),
       ),
