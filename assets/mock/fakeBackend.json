@@ -1,0 +1,19 @@
+[{
+  "id":"00000000001",
+  "address":"Lebu, Addis Ababa",
+  "tin":"1110101454112",
+  "contact":"0913457899",
+  "category":"Electronic Store",
+  "name":"Shemsu's Shop",
+  "image":"https://ethiopiaforums.com/wp-content/uploads/2017/01/e5a6e_img_8546.jpg"
+},
+{
+  "id":"00000000002",
+  "address":"Bole, Addis Ababa",
+  "tin":"658422214455",
+  "contact":"0912345678",
+  "category":"Grocery",
+  "name":"Mulu Baltena",
+  "image":"https://media.lasvegassun.com/media/img/photos/2019/08/08/0806_sun_LittleEthiopia23_t653.JPG?214bc4f9d9bd7c08c7d0f6599bb3328710e01e7b"
+}
+]

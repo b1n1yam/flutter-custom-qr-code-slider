@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:qr_demo/qr_result_bottom_sheet.dart';
+import 'package:qr_demo/transactionModel.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 import 'package:slider_button/slider_button.dart';
 
@@ -26,12 +30,38 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  List<TransactionModel> _merchants = List<TransactionModel>();
+
   String qr;
   bool camState = true;
+  bool loaded = true;
 
   @override
   initState() {
+    fetchMerchants().then((value) {
+      print("hellloooo nickolas cage");
+      print(value);
+      _merchants = value;
+    });
+
     super.initState();
+  }
+
+  Future<List<TransactionModel>> fetchMerchants() async {
+    var merchants = List<TransactionModel>();
+    String data = await DefaultAssetBundle.of(context)
+        .loadString("assets/mock/fakeBackend.json");
+    final jsonResult = json.decode(data);
+    for (var results in jsonResult) {
+      merchants.add(TransactionModel.fromJson(results));
+    }
+    return merchants;
+  }
+
+  void change() {
+    setState(() {
+      loaded = true;
+    });
   }
 
   @override
@@ -70,9 +100,22 @@ class _MyAppState extends State<MyApp> {
                                   style: TextStyle(color: Colors.red),
                                 ),
                                 qrCodeCallback: (code) {
-                                  setState(() {
-                                    qr = code;
-                                  });
+                                  print(code);
+
+                                  if (loaded) {
+                                    setState(() {
+                                      loaded = false;
+                                    });
+                                    for (var mer in _merchants) {
+                                      if (mer == code) {
+                                        //correcto arigato
+                                      } else {
+                                        //throw error
+                                      }
+                                    }
+                                    //check if qr code is valid
+
+                                  }
                                 },
                               ),
                             ),
@@ -82,30 +125,51 @@ class _MyAppState extends State<MyApp> {
                     : Center(child: Text("Camera inactive"))),
             Center(
                 child: SliderButton(
-              action: () {
-                ///Do something here
-              },
-              label: Text(
-                "Slide to cancel Event",
-                style: TextStyle(
-                    color: Color(0xff4a4a4a),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17),
-              ),
-              icon: Text(
-                "x",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 44,
-                ),
-              ),
-            ))
+                    action: () {
+                      ///Do something here
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomNavResults()));
+                    },
+                    label: Text(
+                      "SLIDE TO PAY",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17),
+                    ),
+                    icon: Center(
+                        child: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: 30.0,
+                      semanticLabel: 'Text to announce in accessibility modes',
+                    )),
+                    radius: 10,
+                    baseColor: Colors.white,
+                    backgroundColor: Color(0xff99B9EE),
+                    highlightedColor: Colors.black,
+                    buttonColor: Theme.of(context).primaryColor,
+                    dismissible: false)),
           ],
         ),
       ),
     );
   }
+
+  // void bottomSheetResult(context) {
+  //   showModalBottomSheet<dynamic>(
+  //       context: context,
+  //       backgroundColor: Colors.transparent,
+  //       isScrollControlled: true,
+  //       builder: (ctx) => Padding(
+  //             padding: MediaQuery.of(context).viewInsets,
+  //             child: BottomNavResults(
+  //               hjj: change,
+  //             ),
+  //           )).whenComplete(() => change());
+  // }
 }
 
 class MyCustomPaint extends CustomPainter {
