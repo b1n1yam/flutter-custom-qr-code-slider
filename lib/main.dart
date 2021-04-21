@@ -40,7 +40,6 @@ class _MyAppState extends State<MyApp> {
   initState() {
     fetchMerchants().then((value) {
       print("hellloooo nickolas cage");
-      print(value);
       _merchants = value;
     });
 
@@ -107,10 +106,12 @@ class _MyAppState extends State<MyApp> {
                                       loaded = false;
                                     });
                                     for (var mer in _merchants) {
-                                      if (mer == code) {
+                                      if (mer.id == code) {
+                                        print(code);
                                         //correcto arigato
                                       } else {
                                         //throw error
+
                                       }
                                     }
                                     //check if qr code is valid
