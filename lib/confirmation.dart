@@ -5,11 +5,16 @@ import 'package:qr_demo/recipentBody.dart';
 import 'package:qr_demo/recipentDetail.dart';
 import 'package:qr_demo/recipentFooter.dart';
 import 'package:qr_demo/separator.dart';
+import 'package:qr_demo/transactionModel.dart';
 import 'package:slider_button/slider_button.dart';
 
 ///this file contains the logic of
 ///showing and saving cinema ticket
 class PaymentConfirmation extends StatefulWidget {
+  TransactionModel transaction;
+  String amount;
+  PaymentConfirmation({Key key, @required this.transaction, this.amount})
+      : super(key: key);
   @override
   _PaymentConfirmationState createState() => _PaymentConfirmationState();
 }
@@ -76,18 +81,18 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
                           child: Column(
                             children: <Widget>[
                               ticketDetailsWidget(
-                                'date',
-                                "Wed-04-2021 at 1:30PM",
+                                'Address',
+                                '${widget.transaction.address}',
                               ),
                               SizedBox(height: 4),
                               ticketDetailsWidget(
-                                'invoice number',
-                                '745121124411',
+                                'Phone number',
+                                '${widget.transaction.contact}',
                               ),
                               SizedBox(height: 4),
                               ticketDetailsWidget(
-                                'service',
-                                "purchase",
+                                'TIN',
+                                '${widget.transaction.tin}',
                               ),
                             ],
                           ),
@@ -129,12 +134,12 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
                           children: [
                             recipentBody(
                               'beneficiary',
-                              "0914141414",
+                              '${widget.transaction.contact}',
                             ),
                             SizedBox(height: 4),
                             recipentBody(
                               'name',
-                              "abebe's shop",
+                              '${widget.transaction.name}',
                             ),
                           ],
                         ),
@@ -154,7 +159,7 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
                           children: [
                             recipentBody(
                               'amount',
-                              "1000.00 br",
+                              '${widget.amount}br',
                             ),
                             SizedBox(height: 4),
                             recipentBody(
@@ -164,7 +169,7 @@ class _PaymentConfirmationState extends State<PaymentConfirmation> {
                             SizedBox(height: 8),
                             recipentFooter(
                               'total',
-                              '1005 br',
+                              '${int.parse(widget.amount) + 5}br',
                             ),
                           ],
                         ),

@@ -104,16 +104,21 @@ class _MyAppState extends State<MyApp> {
                                   if (loaded) {
                                     setState(() {
                                       loaded = false;
-                                    });
-                                    for (var mer in _merchants) {
-                                      if (mer.id == code) {
-                                        print(code);
-                                        //correcto arigato
-                                      } else {
-                                        //throw error
-
+                                      TransactionModel qr = _merchants
+                                          .firstWhere((mer) => mer.id == code,
+                                              orElse: () => null);
+                                      if (qr == null)
+                                        _showAlertDialogue();
+                                      else {
+                                        Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BottomNavResults(
+                                                            transaction: qr)))
+                                            .whenComplete(() => change());
                                       }
-                                    }
+                                    });
                                     //check if qr code is valid
 
                                   }
@@ -157,6 +162,26 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  _showAlertDialogue() {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text("Invalid QR code"),
+              content: Text(
+                  "The merchant you scanned doesn't exist or you have scanned a QR code that is not of MudaiPay. "),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("close"))
+              ],
+            )).whenComplete(() => setState(() {
+          loaded = true;
+        }));
   }
 
   // void bottomSheetResult(context) {

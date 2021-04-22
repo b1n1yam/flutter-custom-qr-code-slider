@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_demo/temp/ButtonLogin.dart';
 import 'package:qr_demo/temp/colors.dart';
+import 'package:qr_demo/transactionModel.dart';
 
 import 'confirmation.dart';
 import 'merchantDetail.dart';
@@ -9,6 +10,8 @@ class BottomNavResults extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
 
+  TransactionModel transaction;
+  BottomNavResults({Key key, @required this.transaction}) : super(key: key);
   final Map<String, dynamic> _formData = {
     'amount': null,
   };
@@ -17,9 +20,14 @@ class BottomNavResults extends StatelessWidget {
     if (!_formKey.currentState.validate()) {
       return false;
     }
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => PaymentConfirmation()));
     _formKey.currentState.save();
+
+    String amount = _formData['amount'];
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PaymentConfirmation(amount: amount, transaction: transaction)));
     return true;
   }
 
@@ -58,7 +66,7 @@ class BottomNavResults extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.only(top: 40, bottom: 30),
                                 child: Text(
-                                  "Kebede's shop",
+                                  transaction.name,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: CustomColors.primaryBlue,
@@ -69,12 +77,12 @@ class BottomNavResults extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     merchantDetail(Icons.location_on, "Address",
-                                        "Lebu, Addis Ababa"),
+                                        transaction.address),
                                     SizedBox(
                                       height: 8,
                                     ),
                                     merchantDetail(Icons.paste_sharp, "TIN",
-                                        "0111001000100101"),
+                                        transaction.tin),
                                     SizedBox(
                                       height: 8,
                                     ),
@@ -84,7 +92,7 @@ class BottomNavResults extends StatelessWidget {
                                       height: 8,
                                     ),
                                     merchantDetail(Icons.category, "Category",
-                                        "Electronic Store")
+                                        transaction.category)
                                   ]),
 
                               Container(
@@ -158,14 +166,12 @@ class BottomNavResults extends StatelessWidget {
                     color: Colors.white,
                   ),
                   child: Container(
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 70,
-                    ),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: CustomColors.yellow,
+                    height: 70,
+                    child: CircleAvatar(
+                      child: Image.network(
+                        transaction.image,
+                      ),
+                      radius: 50.0,
                     ),
                   )),
             ),
