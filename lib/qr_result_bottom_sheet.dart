@@ -168,10 +168,9 @@ class BottomNavResults extends StatelessWidget {
                   child: Container(
                     height: 70,
                     child: CircleAvatar(
-                      child: Image.network(
+                      backgroundImage: NetworkImage(
                         transaction.image,
                       ),
-                      radius: 50.0,
                     ),
                   )),
             ),
