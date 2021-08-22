@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
 
   showBottomSheet(BuildContext context1) {
     showModalBottomSheet(
+        isDismissible: false,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         context: context1,
         builder: (BuildContext b) {
@@ -100,6 +101,7 @@ class _MyAppState extends State<MyApp> {
                       style: ElevatedButton.styleFrom(primary: Colors.blue),
                       onPressed: () {
                         showDialog(
+                            barrierDismissible: false,
                             context: context,
                             builder: (context) => AlertDialog(
                                   actions: [
@@ -151,8 +153,9 @@ class _MyAppState extends State<MyApp> {
                               ),
                               qrCodeCallback: (code) {
                                 print(code);
-                                qr = code;
-
+                                setState(() {
+                                  qr = code;
+                                });
                                 if (index == 1) {
                                   showBottomSheet(context2);
                                 }
