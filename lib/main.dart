@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
+import 'package:qr_mobile_vision/qr_mobile_vision.dart';
 
 void main() {
   debugPaintSizeEnabled = false;
@@ -35,14 +37,14 @@ class _MyAppState extends State<MyApp> {
 
   showBottomSheet(BuildContext context1) {
     showModalBottomSheet(
-        isDismissible: false,
+        isScrollControlled: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         context: context1,
         builder: (BuildContext b) {
-          return Container(
-            height: 300,
-            width: 300,
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
@@ -101,7 +103,6 @@ class _MyAppState extends State<MyApp> {
                       style: ElevatedButton.styleFrom(primary: Colors.blue),
                       onPressed: () {
                         showDialog(
-                            barrierDismissible: false,
                             context: context,
                             builder: (context) => AlertDialog(
                                   actions: [
@@ -125,9 +126,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   int index = 1;
-
+  bool showQr = false;
   @override
-  Widget build(BuildContext context2) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Plugin example app'),
@@ -137,37 +138,48 @@ class _MyAppState extends State<MyApp> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-                child: camState
-                    ? CustomPaint(
-                        painter: MyCustomPaint(),
-                        child: Center(
-                          child: Container(
-                            width: 300.0,
-                            height: 300.0,
-                            child: QrCamera(
-                              fit: BoxFit.fitWidth,
-                              onError: (context, error) => Text(
-                                error.toString(),
-                                style: TextStyle(color: Colors.red),
+            showQr
+                ? Column(
+                    children: [
+                      Text("QRCODE: $qr"),
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              showQr = false;
+                            });
+                          },
+                          child: Text("Scan again"))
+                    ],
+                  )
+                : Expanded(
+                    child: camState
+                        ? CustomPaint(
+                            painter: MyCustomPaint(),
+                            child: Center(
+                              child: Container(
+                                width: 300.0,
+                                height: 300.0,
+                                child: QrCamera(
+                                  fit: BoxFit.fitWidth,
+                                  onError: (context, error) => Text(
+                                    error.toString(),
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  qrCodeCallback: (code) {
+                                    print(code);
+                                    setState(() {
+                                      showQr = true;
+                                      qr = code;
+                                    });
+                                    if (showQr) {
+                                      showBottomSheet(context);
+                                    }
+                                  },
+                                ),
                               ),
-                              qrCodeCallback: (code) {
-                                print(code);
-                                setState(() {
-                                  qr = code;
-                                });
-                                if (index == 1) {
-                                  showBottomSheet(context2);
-                                }
-
-                                index++;
-                              },
                             ),
-                          ),
-                        ),
-                      )
-                    : Center(child: Text("Camera inactive"))),
-            Text("QRCODE: $qr"),
+                          )
+                        : Center(child: Text("Camera inactive"))),
           ],
         ),
       ),
@@ -178,13 +190,12 @@ class _MyAppState extends State<MyApp> {
 class MyCustomPaint extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
     var paint = Paint()
       ..color = Color(0xFF2334D0)
       ..strokeWidth = 5.0;
     //the topleft horizonatal line
-    Offset startingPoint = Offset(size.width * 0.09, size.height * 0.25);
-    Offset endingPoint = Offset(size.width * 0.2, size.height * 0.25);
+    Offset startingPoint = Offset(size.width * 0.05, size.height * 0.1);
+    Offset endingPoint = Offset(size.width * 0.2, size.height * 0.1);
 
     canvas.drawLine(startingPoint, endingPoint, paint);
 
